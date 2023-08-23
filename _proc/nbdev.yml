@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "REIT4842_notes"
+  site-url: "https://bthek1.github.io/REIT4842_notes"
+  description: "Thesis notes"
+  repo-branch: main
+  repo-url: "https://github.com/bthek1/REIT4842_notes"
