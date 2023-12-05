@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Base - 2D object segmentation">
+
+<title>REIT4842_notes - Base - 2D object segmentation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="REIT4842_notes - Base - 2D object segmentation">
+<meta property="og:description" content="Base - 2D object segmentation">
+<meta property="og:image" content="https://bthek1.github.io/REIT4842_notes/03_Base 2D object segmentation_files/figure-html/cell-3-output-1.png">
+<meta property="og:site-name" content="REIT4842_notes">
+<meta property="og:image:height" content="352">
+<meta property="og:image:width" content="1216">
+<meta name="twitter:title" content="REIT4842_notes - Base - 2D object segmentation">
+<meta name="twitter:description" content="Base - 2D object segmentation">
+<meta name="twitter:image" content="https://bthek1.github.io/REIT4842_notes/03_Base 2D object segmentation_files/figure-html/cell-3-output-1.png">
+<meta name="twitter:image-height" content="352">
+<meta name="twitter:image-width" content="1216">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">REIT4842_notes</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools ms-auto">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./base 2d object segmentation.html">Base - 2D object segmentation</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">REIT4842_notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./proposal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Proposal</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./research_2d->3d.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Research 2D to 2.5D</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./research_object_segmentation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Research Object Segmentation and Object detection</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./base 2d object segmentation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Base - 2D object segmentation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./depth estimator.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Monocular Depth Estimator</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./seminar.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Seminar</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#datasets" id="toc-datasets" class="nav-link active" data-scroll-target="#datasets">Datasets</a></li>
+  <li><a href="#models" id="toc-models" class="nav-link" data-scroll-target="#models">Models</a></li>
+  <li><a href="#need" id="toc-need" class="nav-link" data-scroll-target="#need">Need</a></li>
+  <li><a href="#detectron---facebook" id="toc-detectron---facebook" class="nav-link" data-scroll-target="#detectron---facebook">Detectron - Facebook</a></li>
+  <li><a href="#yolo" id="toc-yolo" class="nav-link" data-scroll-target="#yolo">YOLO</a></li>
+  <li><a href="#yolo-v8" id="toc-yolo-v8" class="nav-link" data-scroll-target="#yolo-v8">Yolo v8</a></li>
+  <li><a href="#segformer" id="toc-segformer" class="nav-link" data-scroll-target="#segformer">Segformer</a></li>
+  <li><a href="#maskformerimageprocessor" id="toc-maskformerimageprocessor" class="nav-link" data-scroll-target="#maskformerimageprocessor">MaskFormerImageProcessor</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/bthek1/REIT4842_notes/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Base - 2D object segmentation</h1>
+</div>
+
+<div>
+  <div class="description">
+    Base - 2D object segmentation
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<section id="datasets" class="level2">
+<h2 class="anchored" data-anchor-id="datasets">Datasets</h2>
+<p>SUN RGB-D -</p>
+<p>nuscenes -</p>
+<p>Imagenet -</p>
+</section>
+<section id="models" class="level2">
+<h2 class="anchored" data-anchor-id="models">Models</h2>
+<p>detectron2 - https://ai.meta.com/tools/detectron2/</p>
+<p>Yolo</p>
+</section>
+<section id="need" class="level2">
+<h2 class="anchored" data-anchor-id="need">Need</h2>
+<ul>
+<li>dataset with labeled object segmentations</li>
+</ul>
+</section>
+<section id="detectron---facebook" class="level2">
+<h2 class="anchored" data-anchor-id="detectron---facebook">Detectron - Facebook</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> DetrImageProcessor, DetrForObjectDetection</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> <span class="st">"./Data/data_depth_selection/depth_selection/test_depth_completion_anonymous/image/0000000000.png"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> Image.<span class="bu">open</span>(path)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> image</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>im.show()  <span class="co"># show image</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>im.save(<span class="st">'original.jpg'</span>)  <span class="co"># save image</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_Base 2D object segmentation_files/figure-html/cell-3-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>processor <span class="op">=</span> DetrImageProcessor.from_pretrained(<span class="st">"facebook/detr-resnet-50"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> DetrForObjectDetection.from_pretrained(<span class="st">"facebook/detr-resnet-50"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/home/ben/mambaforge/envs/cfast/lib/python3.11/site-packages/transformers/models/detr/image_processing_detr.py:773: FutureWarning: The `max_size` parameter is deprecated and will be removed in v4.26. Please specify in `size['longest_edge'] instead`.
+  warnings.warn(</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> processor(images<span class="op">=</span>image, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>outputs <span class="op">=</span> model(<span class="op">**</span>inputs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># convert outputs (bounding boxes and class logits) to COCO API</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># let's only keep detections with score &gt; 0.9</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>target_sizes <span class="op">=</span> torch.tensor([image.size[::<span class="op">-</span><span class="dv">1</span>]])</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> processor.post_process_object_detection(outputs, target_sizes<span class="op">=</span>target_sizes, threshold<span class="op">=</span><span class="fl">0.9</span>)[<span class="dv">0</span>]</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.array(image)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> score, label, box <span class="kw">in</span> <span class="bu">zip</span>(results[<span class="st">"scores"</span>], results[<span class="st">"labels"</span>], results[<span class="st">"boxes"</span>]):</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    box <span class="op">=</span> [<span class="bu">round</span>(i, <span class="dv">2</span>) <span class="cf">for</span> i <span class="kw">in</span> box.tolist()]</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"Detected </span><span class="sc">{</span>model<span class="sc">.</span>config<span class="sc">.</span>id2label[label.item()]<span class="sc">}</span><span class="ss"> with confidence "</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"</span><span class="sc">{</span><span class="bu">round</span>(score.item(), <span class="dv">3</span>)<span class="sc">}</span><span class="ss"> at location </span><span class="sc">{</span>box<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    start_point <span class="op">=</span> (<span class="bu">int</span>(box[<span class="dv">0</span>]), <span class="bu">int</span>(box[<span class="dv">1</span>]))</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    end_point <span class="op">=</span> (<span class="bu">int</span>(box[<span class="dv">2</span>]), <span class="bu">int</span>(box[<span class="dv">3</span>]))</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">255</span>, <span class="dv">0</span>)  <span class="co"># Green color</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    thickness <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Draw the bounding box</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> cv2.rectangle(img, start_point, end_point, color, thickness)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> Image.fromarray(img)  <span class="co"># RGB PIL image</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>im.show()  <span class="co"># show image</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import cv2\nimport numpy as np'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Detected car with confidence 0.998 at location [817.33, 166.45, 1060.32, 259.68]
+Detected car with confidence 0.986 at location [667.85, 159.86, 758.38, 210.69]
+Detected car with confidence 0.993 at location [395.82, 170.7, 467.47, 217.21]
+Detected car with confidence 0.992 at location [1141.6, 173.02, 1215.77, 349.43]
+Detected person with confidence 0.967 at location [994.13, 156.7, 1013.04, 182.61]
+Detected car with confidence 0.956 at location [627.74, 152.47, 670.72, 178.78]
+Detected car with confidence 0.935 at location [453.03, 171.88, 485.05, 200.99]
+Detected car with confidence 0.992 at location [245.5, 181.43, 384.24, 270.18]
+Detected person with confidence 0.974 at location [17.56, 166.55, 56.18, 207.64]
+Detected car with confidence 0.998 at location [0.79, 192.15, 252.53, 348.11]
+Detected car with confidence 0.954 at location [662.21, 155.05, 737.88, 187.69]
+Detected car with confidence 0.989 at location [752.67, 157.03, 878.92, 239.88]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import cv2\nimport numpy as np'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import cv2\nimport numpy as np'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import cv2\nimport numpy as np'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import cv2\nimport numpy as np'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import cv2\nimport numpy as np'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import cv2\nimport numpy as np'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import cv2\nimport numpy as np'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import cv2\nimport numpy as np'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import cv2\nimport numpy as np'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import cv2\nimport numpy as np'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import cv2\nimport numpy as np'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import cv2\nimport numpy as np'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="03_Base 2D object segmentation_files/figure-html/cell-6-output-15.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> DetrFeatureExtractor, DetrForSegmentation</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>feature_extractor <span class="op">=</span> DetrFeatureExtractor.from_pretrained(<span class="st">'facebook/detr-resnet-50-dc5-panoptic'</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> DetrForSegmentation.from_pretrained(<span class="st">'facebook/detr-resnet-50-dc5-panoptic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/home/ben/mambaforge/envs/cfast/lib/python3.11/site-packages/transformers/models/detr/image_processing_detr.py:773: FutureWarning: The `max_size` parameter is deprecated and will be removed in v4.26. Please specify in `size['longest_edge'] instead`.
+  warnings.warn(</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> feature_extractor(images<span class="op">=</span>image, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>outputs <span class="op">=</span> model(<span class="op">**</span>inputs)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># model predicts COCO classes, bounding boxes, and masks</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>logits <span class="op">=</span> outputs.logits</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>bboxes <span class="op">=</span> outputs.pred_boxes</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>masks <span class="op">=</span> outputs.pred_masks</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the predicted segmentation masks</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>segmentation_masks <span class="op">=</span> outputs.pred_masks.detach().numpy()</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove the channel dimension (C) to make it 2D</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>segmentation_masks1 <span class="op">=</span> segmentation_masks[<span class="dv">0</span>, <span class="dv">1</span>]</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>segmentation_masks2 <span class="op">=</span> segmentation_masks[<span class="dv">0</span>, <span class="dv">2</span>]</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>segmentation_masks3 <span class="op">=</span> segmentation_masks[<span class="dv">0</span>, <span class="dv">3</span>]</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the segmentation masks</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>plt.imshow(segmentation_masks[<span class="dv">0</span>, <span class="dv">5</span>], cmap<span class="op">=</span><span class="st">'viridis'</span>)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_Base 2D object segmentation_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>plt.imshow(segmentation_masks3, cmap<span class="op">=</span><span class="st">'viridis'</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_Base 2D object segmentation_files/figure-html/cell-12-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the segmentation masks</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>plt.imshow(segmentation_masks[<span class="dv">0</span>, <span class="dv">10</span>], cmap<span class="op">=</span><span class="st">'viridis'</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="03_Base 2D object segmentation_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="yolo" class="level2">
+<h2 class="anchored" data-anchor-id="yolo">YOLO</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> YolosImageProcessor, YolosForObjectDetection</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YolosForObjectDetection.from_pretrained(<span class="st">'hustvl/yolos-tiny'</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>image_processor <span class="op">=</span> YolosImageProcessor.from_pretrained(<span class="st">"hustvl/yolos-tiny"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/home/ben/mambaforge/envs/cfast/lib/python3.11/site-packages/transformers/models/yolos/image_processing_yolos.py:704: FutureWarning: The `max_size` parameter is deprecated and will be removed in v4.26. Please specify in `size['longest_edge'] instead`.
+  warnings.warn(</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> image_processor(images<span class="op">=</span>image, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>outputs <span class="op">=</span> model(<span class="op">**</span>inputs)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># model predicts bounding boxes and corresponding COCO classes</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>logits <span class="op">=</span> outputs.logits</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>bboxes <span class="op">=</span> outputs.pred_boxes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># print results</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>target_sizes <span class="op">=</span> torch.tensor([image.size[::<span class="op">-</span><span class="dv">1</span>]])</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> image_processor.post_process_object_detection(outputs, threshold<span class="op">=</span><span class="fl">0.9</span>, target_sizes<span class="op">=</span>target_sizes)[<span class="dv">0</span>]</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.array(image)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> score, label, box <span class="kw">in</span> <span class="bu">zip</span>(results[<span class="st">"scores"</span>], results[<span class="st">"labels"</span>], results[<span class="st">"boxes"</span>]):</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    box <span class="op">=</span> [<span class="bu">round</span>(i, <span class="dv">2</span>) <span class="cf">for</span> i <span class="kw">in</span> box.tolist()]</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"Detected </span><span class="sc">{</span>model<span class="sc">.</span>config<span class="sc">.</span>id2label[label.item()]<span class="sc">}</span><span class="ss"> with confidence "</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span><span class="bu">round</span>(score.item(), <span class="dv">3</span>)<span class="sc">}</span><span class="ss"> at location </span><span class="sc">{</span>box<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    start_point <span class="op">=</span> (<span class="bu">int</span>(box[<span class="dv">0</span>]), <span class="bu">int</span>(box[<span class="dv">1</span>]))</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    end_point <span class="op">=</span> (<span class="bu">int</span>(box[<span class="dv">2</span>]), <span class="bu">int</span>(box[<span class="dv">3</span>]))</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">255</span>, <span class="dv">0</span>)  <span class="co"># Green color</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    thickness <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Draw the bounding box</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> cv2.rectangle(img, start_point, end_point, color, thickness)</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> Image.fromarray(img)  <span class="co"># RGB PIL image</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>im.show()  <span class="co"># show image</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>im.save(<span class="st">'resultsdetection.jpg'</span>)  <span class="co"># save image</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Detected person with confidence 0.934 at location [10.64, 168.62, 58.12, 205.55]
+Detected car with confidence 0.96 at location [643.33, 154.64, 752.81, 177.49]
+Detected car with confidence 0.938 at location [756.49, 169.97, 1079.44, 252.74]
+Detected car with confidence 0.989 at location [376.94, 173.83, 482.96, 215.65]
+Detected car with confidence 0.904 at location [220.8, 189.15, 413.8, 262.7]
+Detected car with confidence 0.907 at location [650.67, 156.56, 756.42, 179.22]
+Detected car with confidence 0.959 at location [665.38, 165.02, 824.25, 208.54]
+Detected car with confidence 0.977 at location [0.21, 202.67, 262.33, 324.33]
+Detected car with confidence 0.951 at location [1139.86, 183.39, 1215.81, 336.22]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="03_Base 2D object segmentation_files/figure-html/cell-17-output-12.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> YolosFeatureExtractor, YolosForObjectDetection</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>feature_extractor <span class="op">=</span> YolosFeatureExtractor.from_pretrained(<span class="st">'hustvl/yolos-small'</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YolosForObjectDetection.from_pretrained(<span class="st">'hustvl/yolos-small'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> feature_extractor(images<span class="op">=</span>image, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>outputs <span class="op">=</span> model(<span class="op">**</span>inputs)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># model predicts bounding boxes and corresponding COCO classes</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>logits <span class="op">=</span> outputs.logits</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>bboxes <span class="op">=</span> outputs.pred_boxes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># print results</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>target_sizes <span class="op">=</span> torch.tensor([image.size[::<span class="op">-</span><span class="dv">1</span>]])</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> image_processor.post_process_object_detection(outputs, threshold<span class="op">=</span><span class="fl">0.9</span>, target_sizes<span class="op">=</span>target_sizes)[<span class="dv">0</span>]</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.array(image)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> score, label, box <span class="kw">in</span> <span class="bu">zip</span>(results[<span class="st">"scores"</span>], results[<span class="st">"labels"</span>], results[<span class="st">"boxes"</span>]):</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    box <span class="op">=</span> [<span class="bu">round</span>(i, <span class="dv">2</span>) <span class="cf">for</span> i <span class="kw">in</span> box.tolist()]</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"Detected </span><span class="sc">{</span>model<span class="sc">.</span>config<span class="sc">.</span>id2label[label.item()]<span class="sc">}</span><span class="ss"> with confidence "</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span><span class="bu">round</span>(score.item(), <span class="dv">3</span>)<span class="sc">}</span><span class="ss"> at location </span><span class="sc">{</span>box<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    start_point <span class="op">=</span> (<span class="bu">int</span>(box[<span class="dv">0</span>]), <span class="bu">int</span>(box[<span class="dv">1</span>]))</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    end_point <span class="op">=</span> (<span class="bu">int</span>(box[<span class="dv">2</span>]), <span class="bu">int</span>(box[<span class="dv">3</span>]))</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">255</span>, <span class="dv">0</span>)  <span class="co"># Green color</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    thickness <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Draw the bounding box</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> cv2.rectangle(img, start_point, end_point, color, thickness)</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> Image.fromarray(img)  <span class="co"># RGB PIL image</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>im.show()  <span class="co"># show image</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Detected car with confidence 0.996 at location [398.04, 173.37, 479.42, 216.12]
+Detected car with confidence 0.973 at location [1142.69, 179.11, 1215.77, 344.98]
+Detected car with confidence 0.939 at location [522.86, 161.63, 551.34, 173.99]
+Detected person with confidence 0.984 at location [14.35, 164.78, 55.11, 207.47]
+Detected car with confidence 0.996 at location [811.19, 166.15, 1064.9, 258.93]
+Detected car with confidence 0.999 at location [0.33, 196.74, 256.94, 349.14]
+Detected car with confidence 0.925 at location [690.92, 159.53, 895.01, 234.39]
+Detected car with confidence 0.943 at location [635.74, 153.3, 704.57, 180.68]
+Detected car with confidence 0.999 at location [253.67, 181.78, 399.16, 271.7]
+Detected car with confidence 0.983 at location [680.44, 163.26, 768.36, 205.59]
+Detected car with confidence 0.971 at location [666.17, 156.34, 741.3, 180.36]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/javascript">
+
+        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import numpy as np\nimport cv2'); }
+    
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="03_Base 2D object segmentation_files/figure-html/cell-21-output-14.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="yolo-v8" class="level2">
+<h2 class="anchored" data-anchor-id="yolo-v8">Yolo v8</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Load a pretrained YOLOv8n model</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'yolov8n.pt'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run inference on 'bus.jpg'</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> model(image)  <span class="co"># results list</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Show the results</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> results:</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    im_array <span class="op">=</span> r.plot()  <span class="co"># plot a BGR numpy array of predictions</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    im <span class="op">=</span> Image.fromarray(im_array[..., ::<span class="op">-</span><span class="dv">1</span>])  <span class="co"># RGB PIL image</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    im.show()  <span class="co"># show image</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    im.save(<span class="st">'resultsdetection1.jpg'</span>)  <span class="co"># save image</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+/home/ben/mambaforge/envs/cfast/lib/python3.11/site-packages/torch/nn/modules/conv.py:459: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at /opt/conda/conda-bld/pytorch_1682343995622/work/aten/src/ATen/native/cudnn/Conv_v8.cpp:80.)
+  return F.conv2d(input, weight, bias, self.stride,
+0: 192x640 9 cars, 61.4ms
+Speed: 7.1ms preprocess, 61.4ms inference, 12.8ms postprocess per image at shape (1, 3, 192, 640)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="03_Base 2D object segmentation_files/figure-html/cell-23-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load a pretrained YOLOv8n-seg Segment model</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'yolov8n-seg.pt'</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Run inference on an image</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> model(image)  <span class="co"># results list</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co"># View results</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> results:</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    im_array <span class="op">=</span> r.plot()  <span class="co"># plot a BGR numpy array of predictions</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    im <span class="op">=</span> Image.fromarray(im_array[..., ::<span class="op">-</span><span class="dv">1</span>])  <span class="co"># RGB PIL image</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    im.show()  <span class="co"># show image</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>    im.save(<span class="st">'resultsseg.jpg'</span>)  <span class="co"># save image</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+0: 192x640 1 person, 7 cars, 1 truck, 20.5ms
+Speed: 1.2ms preprocess, 20.5ms inference, 3.3ms postprocess per image at shape (1, 3, 192, 640)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="03_Base 2D object segmentation_files/figure-html/cell-24-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="segformer" class="level2">
+<h2 class="anchored" data-anchor-id="segformer">Segformer</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> SegformerImageProcessor, SegformerForSemanticSegmentation</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>processor <span class="op">=</span> SegformerImageProcessor.from_pretrained(<span class="st">"nvidia/segformer-b0-finetuned-ade-512-512"</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> SegformerForSemanticSegmentation.from_pretrained(<span class="st">"nvidia/segformer-b0-finetuned-ade-512-512"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> feature_extractor(images<span class="op">=</span>image, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>outputs <span class="op">=</span> model(<span class="op">**</span>inputs)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>logits <span class="op">=</span> outputs.logits  <span class="co"># shape (batch_size, num_labels, height/4, width/4)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="maskformerimageprocessor" class="level2">
+<h2 class="anchored" data-anchor-id="maskformerimageprocessor">MaskFormerImageProcessor</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> MaskFormerImageProcessor, MaskFormerForInstanceSegmentation</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="co"># load MaskFormer fine-tuned on COCO panoptic segmentation</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>processor <span class="op">=</span> MaskFormerImageProcessor.from_pretrained(<span class="st">"facebook/maskformer-swin-large-coco"</span>)</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> MaskFormerForInstanceSegmentation.from_pretrained(<span class="st">"facebook/maskformer-swin-large-coco"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> processor(images<span class="op">=</span>image, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>outputs <span class="op">=</span> model(<span class="op">**</span>inputs)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co"># model predicts class_queries_logits of shape `(batch_size, num_queries)`</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co"># and masks_queries_logits of shape `(batch_size, num_queries, height, width)`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>class_queries_logits <span class="op">=</span> outputs.class_queries_logits</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>masks_queries_logits <span class="op">=</span> outputs.masks_queries_logits</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co"># you can pass them to processor for postprocessing</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> processor.post_process_panoptic_segmentation(outputs, target_sizes<span class="op">=</span>[image.size[::<span class="op">-</span><span class="dv">1</span>]])[<span class="dv">0</span>]</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="co"># we refer to the demo notebooks for visualization (see "Resources" section in the MaskFormer docs)</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>predicted_panoptic_map <span class="op">=</span> result[<span class="st">"segmentation"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
